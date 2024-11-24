@@ -1,11 +1,10 @@
 <template>
   <v-app>
-    <v-main>
-      <router-view />
-      <v-navigation-drawer :width="200" color="#eef5ed">
-        <vlist-item>
+    <v-navigation-drawer :width="200" color="#eef5ed" expand-on-hover rail class="position-fixed">
+        <v-list-item>
           <v-img src="@/assets/logo.png"></v-img>
-        </vlist-item>
+        </v-list-item>
+        <v-divider class="my-2"></v-divider>
         <v-list-item link>
           <template v-slot:prepend>
             <v-list-item-icon>
@@ -54,10 +53,38 @@
           </template>
           <v-list-item-title color="#0a2438" class="font-weight-medium">Configurações</v-list-item-title>
         </v-list-item>
+        <v-list-item link>
+          <template v-slot:prepend>
+            <v-list-item-icon>
+              <v-icon color="#147b64" class="mr-3">mdi-ticket</v-icon>
+            </v-list-item-icon>
+          </template>
+          <v-list-item-title color="#0a2438" class="font-weight-medium">Vale Estudantil</v-list-item-title>
+        </v-list-item>
+        <v-list-item link>
+          <template v-slot:prepend>
+            <v-list-item-icon>
+              <v-icon color="#147b64" class="mr-3">mdi-frequently-asked-questions</v-icon>
+            </v-list-item-icon>
+          </template>
+          <v-list-item-title color="#0a2438" class="font-weight-medium">Dúvidas?</v-list-item-title>
+        </v-list-item>
+        <v-list-item link>
+          <template v-slot:prepend>
+            <v-list-item-icon>
+              <v-icon color="#147b64" class="mr-3">mdi-information</v-icon>
+            </v-list-item-icon>
+          </template>
+          <v-list-item-title color="#0a2438" class="font-weight-medium">Sobre Nós</v-list-item-title>
+        </v-list-item>
         </v-navigation-drawer>
+        
+    <v-main>
+      <router-view />
+      
     </v-main>
 
-    <AppFooter />
+    
   </v-app>
 </template>
 
