@@ -16,12 +16,12 @@ import { createApp } from 'vue'
 const temaCustomizado = {
   dark: false,
   colors: {
-    background: '#eef5ed', // Usando o branco da logo
-    surface: '#eef5ed', // Usando o branco da logo para superfícies
+    background: '#ddead1', // Usando o branco da logo
+    surface: '#ddead1', // Usando o branco da logo para superfícies
     'surface-bright': '#FFFFFF', // Um branco mais puro para contraste
     'surface-light': '#dfe9e4', // Um tom ligeiramente mais escuro do branco
     'surface-variant': '#0a2438', // Azul da logo para variação
-    'on-surface-variant': '#eef5ed', // Contraste com o branco
+    'on-surface-variant': '#ddead1', // Contraste com o branco
     primary: '#0a2438', // Azul da logo como cor primária
     'primary-darken-1': '#081d2e', // Azul ligeiramente mais escuro
     secondary: '#147b64', // Verde da logo como cor secundária
@@ -45,8 +45,8 @@ const temaCustomizado = {
     'pressed-opacity': 0.15, // Levemente maior para estados pressionados
     'dragged-opacity': 0.08, // Mantendo o padrão para estados arrastados
     'theme-kbd': '#0a2438', // Azul da logo para fundo de elementos como "kbd"
-    'theme-on-kbd': '#eef5ed', // Contraste com o branco da logo
-    'theme-code': '#eef5ed', // Branco da logo para fundo de blocos de código
+    'theme-on-kbd': '#ddead1', // Contraste com o branco da logo
+    'theme-code': '#ddead1', // Branco da logo para fundo de blocos de código
     'theme-on-code': '#0a2438', // Azul da logo para contraste no texto do código
   },
 }
