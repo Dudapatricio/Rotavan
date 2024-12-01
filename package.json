@@ -12,7 +12,9 @@
   "dependencies": {
     "@mdi/font": "7.4.47",
     "@supabase/supabase-js": "^2.46.2",
+    "leaflet": "^1.9.4",
     "roboto-fontface": "*",
+    "supabase": "^1.223.10",
     "vue": "^3.4.31",
     "vuetify": "^3.6.14"
   },
