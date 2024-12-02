@@ -27,7 +27,7 @@ export default {
       const lat = -2.9056;
       const lng = -41.7739;
 
-      
+      // Criação do mapa
       const map = L.map(this.$refs.map, {
         center: [lat, lng],
         zoom: 13,
