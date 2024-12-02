@@ -97,10 +97,13 @@
 <script>
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { createClient } from '@supabase/supabase-js';
+import { ref, onMounted } from 'vue';
 
 export default {
   data() {
     return {
+      supabase: createClient('https://mbmczdmhmtctlseiorwy.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ibWN6ZG1obXRjdGxzZWlvcnd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI3NjIzNDcsImV4cCI6MjA0ODMzODM0N30.fK_ex-JdDqGe7lqwblGC5WTJO4-JwP7mBXnLgXFtepE'), //Identificando o Supabase
       search: "",
       points: [
         {
@@ -132,6 +135,19 @@ export default {
     };
   },
   methods: {
+    // async carregarTabela() {
+    // const { data, error } = await supabase.from("horarios_paradas_01").select("*").order("id");
+
+    // if (error) {
+    //   console.error("Erro ao carregar as paradas:", error);
+    // } else {
+
+    //   paradas.value = data; // Pega a tabela inteira
+    //   tickLabels.value = data.map((item) => item.parada); // Pega o nome das paradas
+    //   console.log("Tick Labels:", tickLabels.value); // Exibe pra ver se está funcionando direitinho
+    // }
+    // },
+
     filterPoints() {
       this.filteredPoints = this.points.filter(
         (point) =>
