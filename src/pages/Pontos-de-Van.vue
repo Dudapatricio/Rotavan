@@ -12,7 +12,6 @@
       </v-col>
     </v-row>
 
-   
     <v-row v-if="!selectedPoint">
       <v-col cols="12">
         <v-list>
@@ -36,13 +35,11 @@
       </v-col>
     </v-row>
 
-   
     <v-row v-else>
       <v-col cols="12">
         <h2 class="font-weight-bold">{{ selectedPoint.name }}</h2>
         <p class="text-caption">Última atualização às 22:32</p>
 
-        
         <v-card outlined>
           <v-row class="pa-3">
             <v-col cols="4" class="text-center font-weight-bold">Ônibus</v-col>
@@ -55,7 +52,6 @@
           </v-row>
         </v-card>
 
-        
         <v-list dense class="mt-4">
           <v-list-item>
             <v-list-item-icon>
@@ -77,16 +73,14 @@
           </v-list-item>
         </v-list>
 
-        
         <v-btn class="mt-4" text color="primary" @click="clearSelection">
           Voltar para lista de pontos
         </v-btn>
       </v-col>
     </v-row>
 
-    
     <v-container v-if="showMap" class="mt-4">
-      <div ref="map" class="map"></div>
+      <div ref="mapRef" class="map"></div>
       <v-btn class="mt-2" text color="primary" @click="closeMap">
         Fechar Mapa
       </v-btn>
@@ -94,94 +88,104 @@
   </v-container>
 </template>
 
-<script>
+<script setup>
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { ref, onMounted, nextTick } from "vue";
+import { createClient } from "@supabase/supabase-js";
 
-export default {
-  data() {
-    return {
-      search: "",
-      points: [
-        {
-          id: 1,
-          name: "Ponto 10",
-          address: "Brodeville",
-          vans: [{ id: 1, line: "20", schedule: ["07:43", "09:21", "10:59"] }],
-          coords: [-2.9056, -41.7739],
-        },
-        {
-          id: 2,
-          name: "Ponto 20",
-          address: "Dom Rufino",
-          vans: [{ id: 2, line: "02", schedule: ["08:00", "09:30", "11:00"] }],
-          coords: [-2.917, -41.7642],
-        },
-        {
-          id: 3,
-          name: "Ponto 30",
-          address: "Praça da Graça",
-          vans: [{ id: 3, line: "10", schedule: ["07:15", "08:45", "10:15"] }],
-          coords: [-2.9123, -41.7725],
-        },
-      ],
-      filteredPoints: [],
-      selectedPoint: null,
-      showMap: false,
-      map: null,
-    };
-  },
-  methods: {
-    filterPoints() {
-      this.filteredPoints = this.points.filter(
-        (point) =>
-          point.name.toLowerCase().includes(this.search.toLowerCase()) ||
-          point.address.toLowerCase().includes(this.search.toLowerCase())
-      );
-    },
-    selectPoint(point) {
-      this.selectedPoint = point;
-    },
-    clearSelection() {
-      this.selectedPoint = null;
-    },
-    formatSchedules(schedules) {
-      return schedules.join(", ");
-    },
-    showRealTimeMap() {
-      if (!this.selectedPoint || !this.selectedPoint.coords) {
-        console.error("Ponto inválido.");
-        return;
-      }
-      this.showMap = true;
-      this.$nextTick(() => this.initializeMap());
-    },
-    initializeMap() {
-      const { coords } = this.selectedPoint;
-      if (this.map) this.map.remove();
+// Supabase client
+const supabase = createClient(
+  "https://mbmczdmhmtctlseiorwy.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1ibWN6ZG1obXRjdGxzZWlvcnd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzI3NjIzNDcsImV4cCI6MjA0ODMzODM0N30.fK_ex-JdDqGe7lqwblGC5WTJO4-JwP7mBXnLgXFtepE"
+);
 
-      this.map = L.map(this.$refs.map).setView(coords, 13);
-      L.tileLayer(
-        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        {
-          attribution: "&copy; OpenStreetMap contributors",
-        }
-      ).addTo(this.map);
+// Reactive states
+const search = ref("");
+const points = ref([
+  {
+    id: 1,
+    name: "Ponto 10",
+    address: "Brodeville",
+    vans: [{ id: 1, line: "20", schedule: ["07:43", "09:21", "10:59"] }],
+    coords: [-2.9056, -41.7739],
+  },
+  {
+    id: 2,
+    name: "Ponto 20",
+    address: "Dom Rufino",
+    vans: [{ id: 2, line: "02", schedule: ["08:00", "09:30", "11:00"] }],
+    coords: [-2.917, -41.7642],
+  },
+  {
+    id: 3,
+    name: "Ponto 30",
+    address: "Praça da Graça",
+    vans: [{ id: 3, line: "10", schedule: ["07:15", "08:45", "10:15"] }],
+    coords: [-2.9123, -41.7725],
+  },
+]);
+const filteredPoints = ref([]);
+const selectedPoint = ref(null);
+const showMap = ref(false);
+const mapRef = ref(null); // Ref para o elemento DOM do mapa
+let map = null;
 
-      L.marker(coords).addTo(this.map).bindPopup(this.selectedPoint.name).openPopup();
-    },
-    closeMap() {
-      this.showMap = false;
-      if (this.map) {
-        this.map.remove();
-        this.map = null;
-      }
-    },
-  },
-  mounted() {
-    this.filteredPoints = this.points;
-  },
+// Methods
+const filterPoints = () => {
+  filteredPoints.value = points.value.filter(
+    (point) =>
+      point.name.toLowerCase().includes(search.value.toLowerCase()) ||
+      point.address.toLowerCase().includes(search.value.toLowerCase())
+  );
 };
+
+const selectPoint = (point) => {
+  selectedPoint.value = point;
+};
+
+const clearSelection = () => {
+  selectedPoint.value = null;
+};
+
+const formatSchedules = (schedules) => {
+  return schedules.join(", ");
+};
+
+const showRealTimeMap = async () => {
+  if (!selectedPoint.value?.coords) {
+    console.error("Ponto inválido.");
+    return;
+  }
+  showMap.value = true;
+  await nextTick();
+  initializeMap();
+};
+
+const initializeMap = () => {
+  const { coords } = selectedPoint.value;
+  if (map) map.remove();
+
+  map = L.map(mapRef.value).setView(coords, 13); // Usa o mapRef para inicializar o mapa
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap contributors",
+  }).addTo(map);
+
+  L.marker(coords).addTo(map).bindPopup(selectedPoint.value.name).openPopup();
+};
+
+const closeMap = () => {
+  showMap.value = false;
+  if (map) {
+    map.remove();
+    map = null;
+  }
+};
+
+// Lifecycle hook
+onMounted(() => {
+  filteredPoints.value = points.value;
+});
 </script>
 
 <style scoped>
