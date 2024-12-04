@@ -10,7 +10,7 @@
         cols="4"
         >
           <v-card>
-          <v-btn tile height="auto" width="400" color="secondary" @click="$router.push({ path: `/Vans/01`   })">
+          <v-btn height="auto" width="400" color="secondary" to="/Vans/01">
             <v-icon class="my-3" size="128" color="primary">mdi-bus</v-icon>
             <!-- <v-divider vertical></v-divider> -->
             <v-card-title class="text-h3">{{ van.nome }}</v-card-title>
